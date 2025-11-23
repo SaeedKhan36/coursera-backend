@@ -24,15 +24,21 @@ await userModel.create({
 
 userRouters.post("/signin",  async function (req, res) {
   const {email,password}= req.body
-  const user = await userModel.find({
+  const user = await userModel.findOne({
     email:email,
+
     password:password
   })
   if (user){
-    jwt.sign({
+    const token = jwt.sign({
       id:user._id
     }, SECRET_KEY)
+    res.json({
+      token:token
+
+    })
     
+
   }
   else{
     res.status(401).json({
