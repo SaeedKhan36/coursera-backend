@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const { adminModel } = require("../db");
+const { adminMiddleware } = require("../middleware/admin");
 const SECRET_KEY1 = "adminsecretkey123";
 
 const adminRouters = Router();
@@ -28,7 +29,7 @@ adminRouters.post("/signin", async function(req,res){
     })
 
     if(user){
-    const token = jwt.sign({
+    const token = jwt.sign({ 
         id: admin._id
     }, SECRET_KEY1)
 }
@@ -45,9 +46,19 @@ else{
 })
 
 
-adminRouters.post("/course", function(req,res){
+adminRouters.post("/course", adminMiddleware, async function(req,res){
+    const adminId = req.adminId;
+    const {title,description,price}= req.body;  
+    const course = await courseModel.create({
+        title:title,
+        description:description,
+        imgUrl:imgUrl,
+        creatorID:adminId
+    })
+
     res.json({
-        message : "course"
+        message : "course",
+        courseId : course._id
     })
 })
 
