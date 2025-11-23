@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { adminModel } = require("../db");
 const { adminMiddleware } = require("../middleware/admin");
+const course = require("./course");
 const SECRET_KEY1 = "adminsecretkey123";
 
 const adminRouters = Router();
@@ -47,7 +48,7 @@ else{
 
 
 adminRouters.post("/course", adminMiddleware, async function(req,res){
-    const adminId = req.adminId;
+     
     const {title,description,price}= req.body;  
     const course = await courseModel.create({
         title:title,
@@ -63,14 +64,36 @@ adminRouters.post("/course", adminMiddleware, async function(req,res){
 })
 
 
-adminRouters.put("/course", function(req,res){
-    res.json({
-        message : "signup enpoint"
+adminRouters.put("/course", async function(req,res){
+    const adminId = req.userId;
+    const {courseId,title,description,price,imgUrl}= req.body;
+
+    const course = await courseModel.updateOne({
+        _id : courseId,
+        creatorID : adminId
+    },
+    {
+        title:title,
+        description:description,
+        price:price,
+        imgUrl:imgUrl
     })
+       res.json({
+        message : "course updated",
+        courseId: course._id
+
+    })
+    
+
+   
 })
 
 
-adminRouters.get("/course/bulk", function(req,res){
+adminRouters.get("/course/bulk", async function(req,res){
+    const adminId = req.userId;
+    const courses = await courseModel.find({
+        creatorID : adminId
+    })
     res.json({
         message : "show courses in bulk"
     })
