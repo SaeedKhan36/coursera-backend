@@ -1,8 +1,7 @@
 const { Router } = require("express");
-const { adminModel } = require("../db");
+const { adminModel,courseModel } = require("../db");
 const { adminMiddleware } = require("../middleware/admin");
-const course = require("./course");
-const SECRET_KEY1 = "adminsecretkey123";
+const SECRET_KEY1 = process.env.SECRET_KEY1;
 
 const adminRouters = Router();
 
@@ -19,6 +18,7 @@ await adminModel.create({
   res.json({
     message: "signup endpoint"
   });
+
 })
 
 
@@ -33,27 +33,27 @@ adminRouters.post("/signin", async function(req,res){
     const token = jwt.sign({ 
         id: admin._id
     }, SECRET_KEY1)
+    res.json({
+        token : token
+    })
 }
 else{
-    token:token
-
+res.status(401).json({
+    message : "Invalid credentials"
+})
 }
-
-    
-    
-    res.json({
-        message : "signin enpoint"
-    })
 })
 
 
 adminRouters.post("/course", adminMiddleware, async function(req,res){
-     
-    const {title,description,price}= req.body;  
+ const adminId = req.userId;
+    const {title,description,price,imgUrl}= req.body;
+
     const course = await courseModel.create({
         title:title,
         description:description,
         imgUrl:imgUrl,
+        price:price,
         creatorID:adminId
     })
 
@@ -83,9 +83,6 @@ adminRouters.put("/course", async function(req,res){
         courseId: course._id
 
     })
-    
-
-   
 })
 
 
@@ -95,7 +92,7 @@ adminRouters.get("/course/bulk", async function(req,res){
         creatorID : adminId
     })
     res.json({
-        message : "show courses in bulk"
+         courses
     })
 })
 

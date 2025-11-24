@@ -16,9 +16,6 @@ const adminSchema = new Schema({
     password : String,
     firstName : String,
     lastName : String,
-
-
-
 });
 
 
@@ -34,9 +31,6 @@ const courseSchema = new Schema({
 const purchaseSchema = new Schema({
     userID : ObjectID,
     courseID : ObjectID,
-
-
-
 });
 
 const userModel = mongoose.model("user",userSchema);

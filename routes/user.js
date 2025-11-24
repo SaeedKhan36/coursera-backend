@@ -2,14 +2,13 @@
 const express = require("express");
 
 const userRouters = express.Router();
-const { userModel } = require("../db");
+const { userModel , purchaseModel} = require("../db");
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "asdasdasd";
+const SECRET_KEY = process.env.SECRET_KEY;
 
 
 userRouters.post("/signup", async function (req, res) {
 const {email,password,firstName,lastName}= req.body
-
 await userModel.create({
   email:email,
   password:password,
@@ -61,8 +60,18 @@ userRouters.get("/purchase", async function (req, res) {
   res.json({
     message: "purchase endpoint"
   });
+  let purchaseids = [];
+  for (i=0;i<purchases.length;i++){
+    purchaseids.push(purchases[i].courseId)
+  }
+  const coursesData = await courseModel.find({
+    _id: { $in: purchaseCourseids }
 });
-
+res.json({
+  coursesData,
+  purchases
+});
+});
 module.exports = {
   userRouters
 };
