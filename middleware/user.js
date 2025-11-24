@@ -5,7 +5,7 @@ const SECRET_KEY = "asdasdasd";
 
 function userMiddleware(req, res, next) {
 const token = req.header.token;
-}
+
 const decoded = jwt.verify(token, SECRET_KEY);
 
 if (decoded) {
@@ -17,7 +17,7 @@ else{
         message : "invalid"
     })
 }
-
+}
 module.exports = {
   userMiddleware
 };
