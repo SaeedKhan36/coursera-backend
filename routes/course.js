@@ -2,17 +2,26 @@ const express = require("express");
 
 const courseRouters = express.Router();
 
-courseRouters.post("/purchase", function(req, res) {
+courseRouters.post("/purchase", userMiddleware, async function(req, res) {
+  const user = req.user;
+  const courseId = req.body.courseId;
+
+  const purchase = await purchaseModel.create({
+    userId: user.id,
+    courseId: courseId
+  });
   res.json({
     message: "purchase your course here!"
   });
 });
 
-courseRouters.get("/bulk", function(req, res) {
+courseRouters.get("/bulk", async function(req, res) {
+  const courses = await courseModel.findAll();
   res.json({
-    message: "course viewer"
+    data: courses
   });
 });
+
 
 module.exports = {
   courseRouters: courseRouters

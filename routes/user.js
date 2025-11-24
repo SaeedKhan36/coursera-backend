@@ -52,7 +52,12 @@ userRouters.post("/signin",  async function (req, res) {
   });
 });
 
-userRouters.get("/purchase", function (req, res) {
+userRouters.get("/purchase", async function (req, res) {
+  const userId = req.userId;
+
+  const purchases = await purchaseModel.findAll({
+    userId,
+  });
   res.json({
     message: "purchase endpoint"
   });
